@@ -1,0 +1,99 @@
+/* Remover barras de rolagem */
+html, body {
+    overflow-x: hidden; /* Remove barra horizontal */
+    overflow-y: auto;   /* Mantém rolagem vertical quando necessário, mas esconde a barra */
+}
+
+/* Esconder barra de rolagem no WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Esconder barra de rolagem no Firefox */
+html {
+    scrollbar-width: none; /* Firefox */
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 100px;
+}
+
+h1 {
+    color: yellow;
+    font-size: 23px;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #030454;
+    max-width: 50%;
+    width: 400px;
+    margin-bottom: 20px;
+
+    & button {
+        border-radius: 30px;
+        background-color: #e1db3e;
+        height: 40px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        color: #190f8d;
+        font-size: 14px;
+    }
+
+    & button:hover {
+        opacity: 0.8;
+    }
+
+    & input {
+        border: 1px solid #17034a;
+        border-radius: 30px;
+        height: 40px;
+        background-color: #16133b;
+        color: #fff;
+        font-size: 16px;
+        padding-left: 10px;
+        outline: none;
+    }
+}
+
+.card {
+    display: flex;
+    justify-content: space-between;
+    background-color: #1a133b;
+    margin: 10px;
+    padding: 10px;
+    width: 400px;
+    border-radius: 10px;
+
+    & p {
+        color: #fff;
+        font-weight: bold;
+
+        & span {
+            font-weight: normal;
+        }
+    }
+
+    & button {
+        background-color: transparent;
+        padding: 5px;
+        border: none;
+        cursor: pointer;
+        filter: invert(8%) sepia(100%) saturate(6238%) hue-rotate(355deg) brightness(91%) contrast(119%);
+        
+    }
+
+     & button:hover {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
