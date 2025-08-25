@@ -95,6 +95,8 @@ app.delete("/students/:id", async (req, res) => {
 
 
 
-app.listen(3020, () => {
-  console.log("Servidor rodando na porta 3020");
+const PORT = process.env.PORT || 3020;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
