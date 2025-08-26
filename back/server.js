@@ -6,14 +6,45 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const app = express();
+
+// Middlewares
 app.use(express.json());
 app.use(cors({
   origin: ['https://crud-fullstack-ivory.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 
-// ROTAS
+// Rota raiz - IMPORTANTE para evitar erro 502
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "API funcionando!", 
+    status: "OK",
+    timestamp: new Date()
+  });
+});
+
+// Rota de health check
+app.get("/health", async (req, res) => {
+  try {
+    // Testa conexão com o banco
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ 
+      status: "OK", 
+      database: "connected",
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.log("Erro de conexão com banco:", error);
+    res.status(500).json({ 
+      status: "ERROR", 
+      database: "disconnected",
+      error: error.message 
+    });
+  }
+});
+
+// ROTAS DOS ESTUDANTES
 
 // GET - Buscar todos os estudantes
 app.get("/students", async (req, res) => {
@@ -91,8 +122,24 @@ app.delete("/students/:id", async (req, res) => {
   }
 });
 
+// Middleware de tratamento de erros
+app.use((error, req, res, next) => {
+  console.error("Erro não tratado:", error);
+  res.status(500).json({ error: "Erro interno do servidor" });
+});
+
+// Rota 404 - deve ser a última
+app.use("*", (req, res) => {
+  res.status(404).json({ error: "Rota não encontrada" });
+});
+
+// Graceful shutdown
+process.on('beforeExit', async () => {
+  await prisma.$disconnect();
+});
+
 //  START SERVER
 const PORT = process.env.PORT || 3020;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
