@@ -128,11 +128,6 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: "Erro interno do servidor" });
 });
 
-// Rota 404 - deve ser a última
-app.use("*", (req, res) => {
-  res.status(404).json({ error: "Rota não encontrada" });
-});
-
 // Graceful shutdown
 process.on('beforeExit', async () => {
   await prisma.$disconnect();
