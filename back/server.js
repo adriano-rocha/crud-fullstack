@@ -1,12 +1,15 @@
+// server.js
 import express from "express";
 import cors from "cors";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(cors());
+
+// ROTAS
 
 // GET - Buscar todos os estudantes
 app.get("/students", async (req, res) => {
@@ -23,7 +26,7 @@ app.get("/students", async (req, res) => {
 app.post("/students", async (req, res) => {
   console.log("🔵 POST /students recebido");
   console.log("📝 Dados recebidos:", req.body);
-  
+
   try {
     const student = await prisma.student.create({
       data: {
@@ -33,7 +36,7 @@ app.post("/students", async (req, res) => {
         course: req.body.course,
       },
     });
-    
+
     console.log("✅ Estudante criado:", student);
     res.status(201).json(student);
   } catch (error) {
@@ -42,7 +45,7 @@ app.post("/students", async (req, res) => {
   }
 });
 
-// DELETE - Limpar todos os estudantes (deve vir antes da rota com :id)
+// DELETE - Limpar todos os estudantes
 app.delete("/students/clean", async (req, res) => {
   try {
     await prisma.student.deleteMany({});
@@ -53,15 +56,11 @@ app.delete("/students/clean", async (req, res) => {
   }
 });
 
-// 
-
 // PUT - Atualizar estudante
 app.put("/students/:id", async (req, res) => {
   try {
     const student = await prisma.student.update({
-      where: {
-        id: req.params.id,
-      },
+      where: { id: req.params.id },
       data: {
         email: req.body.email,
         name: req.body.name,
@@ -69,7 +68,7 @@ app.put("/students/:id", async (req, res) => {
         course: req.body.course,
       },
     });
-    
+
     res.status(200).json(student);
   } catch (error) {
     console.log("Erro ao atualizar estudante:", error);
@@ -80,23 +79,16 @@ app.put("/students/:id", async (req, res) => {
 // DELETE - Deletar estudante específico
 app.delete("/students/:id", async (req, res) => {
   try {
-    await prisma.student.delete({
-      where: {
-        id: req.params.id,
-      },
-    });
-    
-    res.status(200).json({ message: "Student sucessfully removed!" });
+    await prisma.student.delete({ where: { id: req.params.id } });
+    res.status(200).json({ message: "Student successfully removed!" });
   } catch (error) {
     console.log("Erro ao deletar estudante:", error);
     res.status(500).json({ error: "Erro ao deletar estudante" });
   }
 });
 
-
-
+//  START SERVER
 const PORT = process.env.PORT || 3020;
-
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
